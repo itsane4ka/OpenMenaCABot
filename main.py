@@ -1,4 +1,5 @@
 import telebot
+import re
 from telebot import types
 from messages import Messages
 import random
@@ -8,7 +9,7 @@ bot = telebot.TeleBot('5839845850:AAHtIvxrAMgxAmI8JR4lSJEUXbVUYiLchj0')
 
 mes = Messages()
 
-channel_link = ["https://t.me/+pgSMhr10-R0yOTIy"]
+channel_link = "https://t.me/+pgSMhr10-R0yOTIy"
 
 subscriptions = {}
 
@@ -60,15 +61,15 @@ def handle_button_click(message):
     text = message.text
 
     if text == "Подписаться":
-        # Store the channel link in the subscriptions dictionary
-        subscriptions[chat_id] = channel_link
-
-        # Send the channel link to the user
         bot.send_message(chat_id, mes.message3(channel_link))
 
     elif text == "Я подписался 👌":
-        # Check if the user is subscribed to the channel
-        if chat_id in subscriptions:
+        channel_id, user_id = get_channel_user_ids(channel_link)
+
+        print("Channel ID:", channel_id)
+        print("User ID:", user_id)
+
+        if is_user_subscribed(channel_id, user_id):
             send_subscribed_message(chat_id)
         else:
             send_unsubscribed_message(chat_id)
@@ -82,7 +83,7 @@ def handle_button_click(message):
     elif text == "Мероприятия":
         send_message_3_ticket(chat_id)
 
-    elif text == "Расписание и запись":
+    elif text == "Расписание и запись" or text == "Записаться":
         send_message_3a0_ticket(chat_id)
 
     elif text == "MEET up":
@@ -110,12 +111,7 @@ def handle_button_click(message):
         send_message_6_ticket(chat_id)
 
     elif text == "Связаться с менеджером":
-        first_name = 'John'
-        last_name = 'Doe'
-        phone_number = '+1234567890'
-
-        # Send the contact
-        bot.send_contact(chat_id, phone_number, first_name, last_name)
+        send_contact_message(chat_id)
 
     elif text == "Подать заявку":
         #TODO
@@ -300,6 +296,58 @@ def send_unsubscribed_message(chat_id):
 
     bot.send_message(chat_id, mes.message4())
 
+
+# Send the unsubscribed message
+def send_contact_message(chat_id):
+    first_name = 'John'
+    last_name = 'Doe'
+    phone_number = '+1234567890'
+
+    # Send the contact
+    bot.send_contact(chat_id, phone_number, first_name, last_name)
+
+
+def is_user_subscribed(channel_id, user_id):
+    try:
+        # Use the get_chat_member method to check if the user is a member of the channel
+        member_info = bot.get_chat_member(channel_id, user_id)
+
+        # If the member status is 'member' or 'creator', the user is subscribed
+        if member_info.status in ['member', 'creator']:
+            return True
+        else:
+            return False
+    except telebot.apihelper.ApiException:
+        # An ApiException will occur if the bot is not a member of the channel
+        return False
+
+
+def get_channel_user_ids(channel_link):
+    print(channel_link)
+
+    # Extract the channel username or ID from the link
+    match = re.search(r'(?:https?://)?(?:www\.)?t\.me/(joinchat/)?(?:invite/)?([a-zA-Z0-9_-]+)', channel_link)
+    if match:
+        channel_identifier = match.group(2)
+
+        # Get the chat ID
+        chat_id = None
+        try:
+            chat_id = int(channel_identifier)
+        except ValueError:
+            pass
+
+        # Get the user ID
+        user_id = None
+        if not chat_id:
+            try:
+                user_id = int(channel_identifier)
+            except ValueError:
+                pass
+
+        return chat_id, user_id
+
+    return None, None
 
 
 # Запускаем бота
