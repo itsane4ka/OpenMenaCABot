@@ -64,15 +64,15 @@ def handle_button_click(message):
         bot.send_message(chat_id, mes.message3(channel_link))
 
     elif text == "Я подписался 👌":
-        channel_id, user_id = get_channel_user_ids(channel_link)
-
-        print("Channel ID:", channel_id)
-        print("User ID:", user_id)
-
-        if is_user_subscribed(channel_id, user_id):
-            send_subscribed_message(chat_id)
-        else:
-            send_unsubscribed_message(chat_id)
+        try:
+            channel_id = -1001954800199
+            member = bot.get_chat_member(channel_id, chat_id)
+            if member.status in ['creator', 'administrator', 'member', 'restricted']:
+                send_subscribed_message(chat_id)
+            else:
+                send_unsubscribed_message(chat_id)
+        except Exception as e:
+            bot.send_message(chat_id, f'An error occurred: {e}')
 
     elif text == '🎁 Забрать "Анализ регионов MENA"':
         send_message_1_ticket(chat_id)
@@ -305,21 +305,6 @@ def send_contact_message(chat_id):
 
     # Send the contact
     bot.send_contact(chat_id, phone_number, first_name, last_name)
-
-
-def is_user_subscribed(channel_id, user_id):
-    try:
-        # Use the get_chat_member method to check if the user is a member of the channel
-        member_info = bot.get_chat_member(channel_id, user_id)
-
-        # If the member status is 'member' or 'creator', the user is subscribed
-        if member_info.status in ['member', 'creator']:
-            return True
-        else:
-            return False
-    except telebot.apihelper.ApiException:
-        # An ApiException will occur if the bot is not a member of the channel
-        return False
 
 
 def get_channel_user_ids(channel_link):

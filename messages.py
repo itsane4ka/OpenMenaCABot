@@ -92,7 +92,7 @@ class Messages:
         return message_2
 
     def message3(self, link):
-        message_3 = f"Наш канал: {link[0]}"
+        message_3 = f"Наш канал: {link}"
         return message_3
 
     def message4(self):
