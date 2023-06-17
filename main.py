@@ -74,31 +74,41 @@ def handle_button_click(message):
             send_unsubscribed_message(chat_id)
 
     elif text == '🎁 Забрать "Анализ регионов MENA"':
-        send_message_mena_analysis(chat_id)
+        send_message_1_ticket(chat_id)
 
     elif text == "Про OpenMENA":
-        bot.send_message(chat_id, "пашол нахой")
+        send_message_2_ticket(chat_id)
 
     elif text == "Мероприятия":
-        bot.send_message(chat_id, "пашол нахой")
+        send_message_3_ticket(chat_id)
 
     elif text == "Стать участником":
-        bot.send_message(chat_id, "пашол нахой")
+        send_message_4_ticket(chat_id)
 
     elif text == "Стать партнером":
-        bot.send_message(chat_id, "пашол нахой")
+        send_message_5_ticket(chat_id)
 
     elif text == "OpenCalifornia":
-        bot.send_message(chat_id, "пашол нахой")
+        send_message_6_ticket(chat_id)
+
+    elif text == "Связаться с менеджером":
+        first_name = 'John'
+        last_name = 'Doe'
+        phone_number = '+1234567890'
+
+        # Send the contact
+        bot.send_contact(chat_id, phone_number, first_name, last_name)
 
     elif text == "Подать заявку":
-        bot.send_message(chat_id, "пашол нахой")
+        #TODO
+        pass
 
     elif text == "На главную":
         send_subscribed_message(chat_id)
 
+
 # Send the analysis info
-def send_message_mena_analysis(chat_id):
+def send_message_1_ticket(chat_id):
     keyboard = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
     button1 = types.KeyboardButton(text="Про OpenMENA")
     button2 = types.KeyboardButton(text="На главную")
@@ -106,6 +116,70 @@ def send_message_mena_analysis(chat_id):
 
     with open('doc.pdf', 'rb') as pdf:
         bot.send_document(chat_id, pdf, caption=mes.message5(), reply_markup=keyboard)
+
+
+# Send the analysis info
+def send_message_2_ticket(chat_id):
+    keyboard = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+    button1 = types.KeyboardButton(text="Мероприятия")
+    button2 = types.KeyboardButton(text="Стать участником")
+    button3 = types.KeyboardButton(text="Стать партнёром")
+    button4 = types.KeyboardButton(text="OpenCalifornia")
+    button5 = types.KeyboardButton(text="На главную")
+    keyboard.add(button1, button2, button3, button4, button5)
+
+    bot.send_message(chat_id, mes.message7(), reply_markup=keyboard)
+
+
+# Send the analysis info
+def send_message_3_ticket(chat_id):
+    keyboard = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+    button1 = types.KeyboardButton(text="Расписание и запись")
+    button2 = types.KeyboardButton(text="MEET up")
+    button3 = types.KeyboardButton(text="Academy")
+    button4 = types.KeyboardButton(text="Business Trip")
+    button5 = types.KeyboardButton(text="Стратсессии")
+    button6 = types.KeyboardButton(text="AMA сессии")
+    button7 = types.KeyboardButton(text="На главную")
+    keyboard.add(button1, button2, button3, button4, button5, button6, button7)
+
+    bot.send_message(chat_id, mes.message8(), reply_markup=keyboard)
+
+
+# Send the analysis info
+def send_message_4_ticket(chat_id):
+    keyboard = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+    button1 = types.KeyboardButton(text="Подать заявку")
+    button2 = types.KeyboardButton(text="Стать участником")
+    button3 = types.KeyboardButton(text="Стать партнером")
+    button4 = types.KeyboardButton(text="На главную")
+    keyboard.add(button1, button2, button3, button4)
+
+    bot.send_message(chat_id, mes.message9(), reply_markup=keyboard)
+
+
+# Send the analysis info
+def send_message_5_ticket(chat_id):
+    keyboard = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+    button1 = types.KeyboardButton(text="Подать заявку")
+    button2 = types.KeyboardButton(text="Стать участником")
+    button3 = types.KeyboardButton(text="OpenCalifornia")
+    button4 = types.KeyboardButton(text="На главную")
+    keyboard.add(button1, button2, button3, button4)
+
+    bot.send_message(chat_id, mes.message10(), reply_markup=keyboard)
+
+
+# Send the analysis info
+def send_message_6_ticket(chat_id):
+    keyboard = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+    button1 = types.KeyboardButton(text="Стать участником")
+    button2 = types.KeyboardButton(text="Kанал OpenCalifornia")
+    button3 = types.KeyboardButton(text="OpenCalifornia")
+    button4 = types.KeyboardButton(text="На главную")
+    keyboard.add(button1, button2, button3, button4)
+
+    bot.send_message(chat_id, mes.message11(), reply_markup=keyboard)
 
 
 # Send the subscribed message
