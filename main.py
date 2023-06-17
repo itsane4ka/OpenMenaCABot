@@ -82,6 +82,24 @@ def handle_button_click(message):
     elif text == "Мероприятия":
         send_message_3_ticket(chat_id)
 
+    elif text == "Расписание и запись":
+        send_message_3a0_ticket(chat_id)
+
+    elif text == "MEET up":
+        send_message_3a_ticket(chat_id)
+
+    elif text == "Academy":
+        send_message_3b_ticket(chat_id)
+
+    elif text == "Business Trip":
+        send_message_3c_ticket(chat_id)
+
+    elif text == "Стратсессии":
+        send_message_3d_ticket(chat_id)
+
+    elif text == "AMA сессии":
+        send_message_3e_ticket(chat_id)
+
     elif text == "Стать участником":
         send_message_4_ticket(chat_id)
 
@@ -144,6 +162,85 @@ def send_message_3_ticket(chat_id):
     keyboard.add(button1, button2, button3, button4, button5, button6, button7)
 
     bot.send_message(chat_id, mes.message8(), reply_markup=keyboard)
+
+
+# Send the analysis info
+def send_message_3a0_ticket(chat_id):
+    keyboard = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+    button1 = types.KeyboardButton(text="На главную")
+    keyboard.add(button1)
+    message_form = "https://clck.ru/34Zn35"
+    bot.send_message(chat_id, message_form, reply_markup=keyboard)
+
+
+# Send the analysis info
+def send_message_3a_ticket(chat_id):
+    keyboard = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+    button1 = types.KeyboardButton(text="Записаться")
+    button2 = types.KeyboardButton(text="Academy")
+    button3 = types.KeyboardButton(text="Business Trip")
+    button4 = types.KeyboardButton(text="Стратсессии")
+    button5 = types.KeyboardButton(text="AMA сессии")
+    button6 = types.KeyboardButton(text="На главную")
+    keyboard.add(button1, button2, button3, button4, button5, button6)
+
+    bot.send_message(chat_id, mes.message12(), reply_markup=keyboard)
+
+
+# Send the analysis info
+def send_message_3b_ticket(chat_id):
+    keyboard = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+    button1 = types.KeyboardButton(text="Записаться")
+    button2 = types.KeyboardButton(text="MEET up")
+    button4 = types.KeyboardButton(text="Business Trip")
+    button5 = types.KeyboardButton(text="Стратсессии")
+    button6 = types.KeyboardButton(text="AMA сессии")
+    button7 = types.KeyboardButton(text="На главную")
+    keyboard.add(button1, button2, button4, button5, button6, button7)
+
+    bot.send_message(chat_id, mes.message13(), reply_markup=keyboard)
+
+
+# Send the analysis info
+def send_message_3c_ticket(chat_id):
+    keyboard = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+    button1 = types.KeyboardButton(text="Записаться")
+    button2 = types.KeyboardButton(text="MEET up")
+    button4 = types.KeyboardButton(text="Academy")
+    button5 = types.KeyboardButton(text="Стратсессии")
+    button6 = types.KeyboardButton(text="AMA сессии")
+    button7 = types.KeyboardButton(text="На главную")
+    keyboard.add(button1, button2, button4, button5, button6, button7)
+
+    bot.send_message(chat_id, mes.message14(), reply_markup=keyboard)
+
+
+# Send the analysis info
+def send_message_3d_ticket(chat_id):
+    keyboard = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+    button1 = types.KeyboardButton(text="Записаться")
+    button2 = types.KeyboardButton(text="MEET up")
+    button4 = types.KeyboardButton(text="Business Trip")
+    button5 = types.KeyboardButton(text="Academy")
+    button6 = types.KeyboardButton(text="AMA сессии")
+    button7 = types.KeyboardButton(text="На главную")
+    keyboard.add(button1, button2, button4, button5, button6, button7)
+
+    bot.send_message(chat_id, mes.message15(), reply_markup=keyboard)
+
+
+# Send the analysis info
+def send_message_3e_ticket(chat_id):
+    keyboard = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+    button1 = types.KeyboardButton(text="Записаться")
+    button2 = types.KeyboardButton(text="MEET up")
+    button4 = types.KeyboardButton(text="Business Trip")
+    button5 = types.KeyboardButton(text="Academy")
+    button6 = types.KeyboardButton(text="Стратсессии")
+    button7 = types.KeyboardButton(text="На главную")
+    keyboard.add(button1, button2, button4, button5, button6, button7)
+
+    bot.send_message(chat_id, mes.message16(), reply_markup=keyboard)
 
 
 # Send the analysis info
