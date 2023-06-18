@@ -3,6 +3,18 @@ from telebot import types
 from messages import Messages
 import random
 import requests
+from amocrm.v2 import tokens, Contact as _Contact, custom_field, Lead, links
+
+tokens.default_token_manager(
+    client_id="6dde3fe6-648b-4f88-9477-5e77655f226b",
+    client_secret="hpRgzOS1xDmhn1ZNGFUw3XjJ1wMkWOlSTAp63vW4nFetKRThqmknKAnab7yr2YMZ",
+    subdomain="teamopenmenagroup",
+    redirect_url="https://go.com",
+    storage=tokens.FileTokensStorage(),  # by default FileTokensStoragec
+)
+
+# tokens.default_token_manager.init(code="def5020096f57d0dffa94fb62c15ae004a3db446ce68ec51d6b4722dba30d464f2644eea6c76f5fb6929e8cd930231279a1f7a8a61a1a4d5f53c5eff3a9de16ed90bce929c69ce6470dbd54e9bae6541dafa35d6452032e6c75f5185796ef170716e1038157a5185c0e30fc4349158167cb5fae054867efaae92d268e3766c9e337f9305fbb507bb9bcf57ebe47afa50c5bc1bbb95dac2e7f52f3beba2e8019592d478b426bf9511a0cefec47b73a57965d3f7589441ab1e13a7750277471771330f945d3d8416b6fe1cfe1ac6e43480d5a1cbf7e02279cb0514a0b130ed7f6b467a5557872c45f9146d15eb254e8aa15b5b5485921110f38cf6902cbbef655a700d8340bbadfd8113b0c4c184aa26afc70137d9743af190ec6e7a248b0eecae685cadfb6c827b4d36a80643b70fbb5ffc76b3cc4b5748eef07c6b0f918ab03f33a94f7cff6a6405be6c487f2fef4470b1d4a67cfb6d276652e1bc1523fddb968d5ddd91273b92784094d7d1c8498ba3773f61f441d090048b0ebf86a2cea65054f14d0401b8aad103a8a951992c50bb409986f18ea0c82315b58f97f5f67b90a9c0ccc278c439a9b29c926bab249ddadedd517532bf638cc0c61468cc4d697ed8a356d3c800f55cea07117efa30f60c75a46df25d74d2032d46ddef6172", skip_error=True)
+
 
 # Создаем экземпляр бота
 bot = telebot.TeleBot('5839845850:AAHtIvxrAMgxAmI8JR4lSJEUXbVUYiLchj0')
@@ -18,7 +30,7 @@ channel_open_mena_link = 'link to channel OpenMENA'
 channel_open_mena_chat_link = 'link to chat OpenMENA'
 subscriptions = {}
 
-user_state_ca, user_state_mena, user_data_ca, user_data_mena, user_data_ca_for_post, user_data_mena_for_post = {}, {}, {}, {}, {}, {},
+user_state_ca, user_state_mena, user_data_ca, user_data_mena = {}, {}, {}, {},
 
 fields_for_ca = ['Имя Фамилия', 'Телефон для связи', 'Ваш Telegram', 'Email', 'В какой стране Вы живете?',
                  'Опишите деятельность Вашей компании?', 'Регион присутствия (в том числе планируемый) Вашей компании?',
@@ -39,25 +51,26 @@ fields_for_mena = ['Имя Фамилия', 'Телефон для связи', 
                    'Хотели бы Вы стать партнером OpenMENA?',
                    'Цель участия в OpenMENA', 'Какой из форматов встреч нравится и актуален для вас?']
 
-form_entry = [
-    'entry.91462916',
-    'entry.630533396',
-    'entry.2039931063',
-    'entry.1318559028',
-    'entry.1254544746',
-    'entry.191036165',
-    'entry.854259575',
-    'entry.1448253998',
-    'entry.729755307',
-    'entry.601340499',
-    'entry.292760203',
-    'entry.1874047276',
-    'entry.1566950839',
-    'entry.104522551',
-    'entry.281659691',
-    'entry.2132372300',
-    'entry.1885107982',
-]
+
+# form_entry = [
+#     'entry.91462916',
+#     'entry.630533396',
+#     'entry.2039931063',
+#     'entry.1318559028',
+#     'entry.1254544746',
+#     'entry.191036165',
+#     'entry.854259575',
+#     'entry.1448253998',
+#     'entry.729755307',
+#     'entry.601340499',
+#     'entry.292760203',
+#     'entry.1874047276',
+#     'entry.1566950839',
+#     'entry.104522551',
+#     'entry.281659691',
+#     'entry.2132372300',
+#     'entry.1885107982',
+# ]
 
 # Обработчик команды /start
 @bot.message_handler(commands=['start'])
@@ -78,25 +91,39 @@ def start(message):
 # Обработчик полученного контакта
 @bot.message_handler(content_types=['contact'])
 def handle_contact(message):
-    contact = message.contact
-    phone_number = contact.phone_number
-    first_name = contact.first_name
-    last_name = contact.last_name if contact.last_name else ""
+    chat_id = message.chat.id
+    if chat_id in user_state_ca and fields_for_ca[user_state_ca[chat_id]] == 'Телефон для связи':
+        user_data_ca[chat_id][fields_for_ca[user_state_ca[chat_id]]] = message.contact.phone_number
+        user_state_ca[chat_id] += 1
+        keyboard = types.ReplyKeyboardRemove()
+        bot.send_message(chat_id, fields_for_ca[user_state_ca[chat_id]],
+                         reply_markup=keyboard)
+    elif chat_id in user_state_mena and fields_for_mena[user_state_mena[chat_id]] == 'Телефон для связи':
+        user_data_mena[chat_id][fields_for_mena[user_state_mena[chat_id]]] = message.contact.phone_number
+        user_state_mena[chat_id] += 1
+        keyboard = types.ReplyKeyboardRemove()
+        bot.send_message(chat_id, fields_for_mena[user_state_mena[chat_id]],
+                         reply_markup=keyboard)
+    else:
+        contact = message.contact
+        phone_number = contact.phone_number
+        first_name = contact.first_name
+        last_name = contact.last_name or ""
 
-    # Обрабатываем полученный контакт
-    # Можно сохранить его в базу данных или выполнить другие действия
+        # Обрабатываем полученный контакт
+        # Можно сохранить его в базу данных или выполнить другие действия
 
-    # Отправляем подтверждение сбора контакта
-    bot.send_message(message.chat.id, mes.message1(first_name))
+        # Отправляем подтверждение сбора контакта
+        bot.send_message(message.chat.id, mes.message1(first_name))
 
-    # Create a new keyboard with additional buttons
-    new_keyboard = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
-    button1 = types.KeyboardButton(text="Подписаться")
-    button2 = types.KeyboardButton(text="Я подписался 👌")
-    new_keyboard.add(button1, button2)
+        # Create a new keyboard with additional buttons
+        new_keyboard = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+        button1 = types.KeyboardButton(text="Подписаться")
+        button2 = types.KeyboardButton(text="Я подписался 👌")
+        new_keyboard.add(button1, button2)
 
-    # Send a message with the new keyboard
-    bot.send_message(message.chat.id, mes.message2(), reply_markup=new_keyboard)
+        # Send a message with the new keyboard
+        bot.send_message(message.chat.id, mes.message2(), reply_markup=new_keyboard)
 
 
 # Handler for button clicks
@@ -162,7 +189,7 @@ def handle_button_click(message):
         send_subscribed_message(chat_id)
 
 
-    #vlad code
+    # vlad code
 
     elif text == "Подать заявку":
         keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
@@ -191,20 +218,18 @@ def handle_button_click(message):
     elif chat_id in user_state_ca:
         if text == "Пропустить":
             user_data_ca[chat_id][fields_for_ca[user_state_ca[chat_id]]] = ""
-            user_data_ca_for_post[form_entry[user_state_ca[chat_id]]] = ""
+            # user_data_ca_for_post[form_entry[user_state_ca[chat_id]]] = ""
         else:
             user_data_ca[chat_id][fields_for_ca[user_state_ca[chat_id]]] = text
-            user_data_ca_for_post[form_entry[user_state_ca[chat_id]]] = text
+            # user_data_ca_for_post[form_entry[user_state_ca[chat_id]]] = text
         user_state_ca[chat_id] += 1
         ask_question_ca(message)
 
     elif chat_id in user_state_mena:
         if text == "Пропустить":
             user_data_mena[chat_id][fields_for_mena[user_state_mena[chat_id]]] = ""
-            user_data_mena_for_post[form_entry[user_state_mena[chat_id]]] = ""
         else:
             user_data_mena[chat_id][fields_for_mena[user_state_mena[chat_id]]] = text
-            user_data_mena_for_post[form_entry[user_state_mena[chat_id]]] = text
         user_state_mena[chat_id] += 1
         ask_question_mena(message)
 
@@ -212,21 +237,22 @@ def handle_button_click(message):
         bot.send_message(chat_id, "Я не понимаю такой команды.")
 
 
-
 def ask_question_ca(message):
     chat_id = message.chat.id
 
     if user_state_ca[chat_id] >= len(fields_for_ca):
-        bot.send_message(chat_id, 'Спасибо за ваше время. Мы получили все ваши ответы.')
+        bot.send_message(chat_id, 'Спасибо за ваше время. Подождите пару секунд для обработки ответов!')
         keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
         button = types.KeyboardButton(text="На главную")
         keyboard.add(button)
-        response = requests.post(url_ca, data=user_data_ca_for_post)
-        user_data_ca_for_post.clear()
-        if response.status_code == 200:
-            print('Форма успешно отправлена')
-        else:
-            print('Произошла ошибка при отправке формы')
+        print(user_data_ca)
+        send_to_crm(is_ca=True, chat_id=chat_id)
+
+        # response = requests.post(url_ca, data=user_data_ca_for_post)
+        # if response.status_code == 200:
+        #     print('Форма успешно отправлена')
+        # else:
+        #     print('Произошла ошибка при отправке формы')
         bot.send_message(chat_id,
                          f'Форма успешно отправлена, вы можете присоединиться к нашему сообществу по этой ссылке: {channel_open_california_chat_link}',
                          reply_markup=keyboard)
@@ -260,20 +286,22 @@ def ask_question_ca(message):
         keyboard = types.ReplyKeyboardRemove()
         bot.send_message(chat_id, fields_for_ca[user_state_ca[chat_id]], reply_markup=keyboard)
 
+
 def ask_question_mena(message):
     chat_id = message.chat.id
 
     if user_state_mena[chat_id] >= len(fields_for_mena):
-        bot.send_message(chat_id, 'Спасибо за ваше время. Мы получили все ваши ответы.')
+        bot.send_message(chat_id, 'Спасибо за ваше время. Подождите пару секунд для обработки ответов!')
         keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
         button = types.KeyboardButton(text="На главную")
         keyboard.add(button)
-        response = requests.post(url_mena, data=user_data_mena_for_post)
-        user_data_mena_for_post.clear()
-        if response.status_code == 200:
-            print('Форма успешно отправлена')
-        else:
-            print('Произошла ошибка при отправке формы')
+        print(user_data_mena)
+        send_to_crm(is_ca=False, chat_id=chat_id)
+        # response = requests.post(url_mena, data=user_data_mena_for_post)
+        # if response.status_code == 200:
+        #     print('Форма успешно отправлена')
+        # else:
+        #     print('Произошла ошибка при отправке формы')
         bot.send_message(chat_id,
                          f'Форма успешно отправлена, вы можете присоединиться к нашему сообществу по этой ссылке: {channel_open_mena_chat_link}',
                          reply_markup=keyboard)
@@ -453,7 +481,7 @@ def send_message_5_ticket(chat_id):
 # Send the analysis info
 def send_message_6_ticket(chat_id):
     keyboard = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
-    button1 = types.KeyboardButton(text="Стать участником")
+    button1 = types.KeyboardButton(text="Стать участником OpenCA")
     button2 = types.KeyboardButton(text="Kанал OpenCalifornia")
     button3 = types.KeyboardButton(text="OpenCalifornia")
     button4 = types.KeyboardButton(text="На главную")
@@ -492,6 +520,66 @@ def send_contact_message(chat_id):
 
     # Send the contact
     bot.send_contact(chat_id, phone_number, first_name, last_name)
+
+
+def send_to_crm(is_ca: bool, chat_id):
+    user_data = user_data_ca if is_ca else user_data_mena
+
+    class Contact(_Contact):
+        custom1 = custom_field.TextCustomField("Телефон")
+        custom2 = custom_field.TextCustomField("Ваш Telegram")
+        custom3 = custom_field.TextCustomField("Email")
+        custom4 = custom_field.TextCustomField("В какой стране Вы живете?")
+        custom5 = custom_field.TextCustomField("Опишите деятельность Вашей компании?")
+        custom6 = custom_field.TextCustomField("Регион присутствия (в том числе планируемый) Вашей компании?")
+        custom7 = custom_field.TextCustomField("Как называется Ваша компания?")
+        custom8 = custom_field.TextCustomField("Ссылка на сайт компании")
+        custom9 = custom_field.TextCustomField("Годовой оборот Вашей компании?")
+        custom10 = custom_field.TextCustomField("Количество человек в Вашей команде?")
+        custom11 = custom_field.TextCustomField("Дополнительные направления бизнеса, которые Вы развиваете?")
+        custom12_ca = custom_field.TextCustomField("Вы хотите стать спикером на мероприятиях OpenCA?")
+        custom12_mena = custom_field.TextCustomField("Вы хотите стать спикером на мероприятиях OpenMENA?")
+        custom13 = custom_field.TextCustomField("На какие темы Вы хотите выступать?")
+        custom14_ca = custom_field.TextCustomField("Хотели бы Вы стать партнером OpenCA?")
+        custom14_mena = custom_field.TextCustomField("Хотели бы Вы стать партнером OpenMENA?")
+        custom15_ca = custom_field.TextCustomField("Цель участия в OpenCA")
+        custom15_mena = custom_field.TextCustomField("Цель участия в OpenMENA")
+        custom16 = custom_field.TextCustomField("Какой из форматов встреч нравится и актуален для вас?")
+
+    lead = Lead.objects.create()
+    lead.save()
+
+    contact = Contact.objects.create(name=user_data[chat_id]["Имя Фамилия"])
+    contact.custom1 = user_data[chat_id]["Телефон для связи"]
+    contact.custom2 = user_data[chat_id]["Ваш Telegram"]
+    contact.custom3 = user_data[chat_id]["Email"]
+    contact.custom4 = user_data[chat_id]["В какой стране Вы живете?"]
+    contact.custom5 = user_data[chat_id]["Опишите деятельность Вашей компании?"]
+    contact.custom6 = user_data[chat_id]["Регион присутствия (в том числе планируемый) Вашей компании?"]
+    contact.custom7 = user_data[chat_id]["Как называется Ваша компания?"]
+    contact.custom8 = user_data[chat_id]["Ссылка на сайт компании"]
+    contact.custom9 = user_data[chat_id]["Годовой оборот Вашей компании?"]
+    contact.custom10 = user_data[chat_id]["Количество человек в Вашей команде?"]
+    contact.custom11 = user_data[chat_id]["Дополнительные направления бизнеса, которые Вы развиваете?"]
+    contact.custom13 = user_data[chat_id]["На какие темы Вы хотите выступать?"]
+    contact.custom16 = user_data[chat_id]["Какой из форматов встреч нравится и актуален для вас?"]
+
+    if is_ca:
+        contact.custom12_ca = user_data[chat_id]["Вы хотите стать спикером на мероприятиях OpenCA?"]
+        contact.custom14_ca = user_data[chat_id]["Хотели бы Вы стать партнером OpenCA?"]
+        contact.custom15_ca = user_data[chat_id]['Цель участия в OpenCA']
+    else:
+        contact.custom12_mena = user_data[chat_id]["Вы хотите стать спикером на мероприятиях OpenMENA?"]
+        contact.custom14_mena = user_data[chat_id]["Хотели бы Вы стать партнером OpenMENA?"]
+        contact.custom15_mena = user_data[chat_id]["Цель участия в OpenMENA"]
+
+    contact.save()
+    links.LinksInteraction().link(lead, contact)
+    lead.save()
+    if is_ca:
+        user_data_ca.clear()
+    else:
+        user_data_mena.clear()
 
 
 # Запускаем бота
