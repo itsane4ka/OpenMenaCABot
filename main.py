@@ -75,10 +75,6 @@ def start(message):
     bot.send_message(message.chat.id, "Привет! Пожалуйста, отправь мне свой контакт.", reply_markup=keyboard)
 
 
-@bot.message_handler(func=lambda message: True)
-def handle_unknown(message):
-    bot.reply_to(message, "Я не понимаю такой команды.")
-
 # Обработчик полученного контакта
 @bot.message_handler(content_types=['contact'])
 def handle_contact(message):
@@ -213,7 +209,7 @@ def handle_button_click(message):
         ask_question_mena(message)
 
     else:
-        bot.reply_to(message, "Я не понимаю этой команды.")
+        bot.send_message(chat_id, "Я не понимаю такой команды.")
 
 
 
