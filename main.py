@@ -195,7 +195,7 @@ def handle_button_click(message):
         send_subscribed_message(chat_id)
 
 
-    # vlad code
+    # second code
 
     elif text == "Подать заявку":
         keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
@@ -349,7 +349,7 @@ def send_message_1_ticket(chat_id):
     button2 = types.KeyboardButton(text="На главную")
     keyboard.add(button1, button2)
 
-    with open('doc.pdf', 'rb') as pdf:
+    with open('resources/doc.pdf', 'rb') as pdf:
         bot.send_document(chat_id, pdf, caption=mes.message5(), reply_markup=keyboard)
 
 
@@ -363,7 +363,11 @@ def send_message_2_ticket(chat_id):
     button5 = types.KeyboardButton(text="На главную")
     keyboard.add(button1, button2, button3, button4, button5)
 
-    bot.send_message(chat_id, mes.message7(), reply_markup=keyboard)
+    photo = open('resources/openmena.png', 'rb')  # Opening the image file
+
+    bot.send_photo(chat_id, photo, caption=mes.message7(), reply_markup=keyboard)
+
+    photo.close()
 
 
 # Send the analysis info
@@ -401,7 +405,11 @@ def send_message_3a_ticket(chat_id):
     button6 = types.KeyboardButton(text="На главную")
     keyboard.add(button1, button2, button3, button4, button5, button6)
 
-    bot.send_message(chat_id, mes.message12(), reply_markup=keyboard)
+    photo = open('resources/pitch.png', 'rb')  # Opening the image file
+
+    bot.send_photo(chat_id, photo, caption=mes.message12(), reply_markup=keyboard)
+
+    photo.close()  # Closing the image file after sending
 
 
 # Send the analysis info
@@ -415,7 +423,11 @@ def send_message_3b_ticket(chat_id):
     button7 = types.KeyboardButton(text="На главную")
     keyboard.add(button1, button2, button4, button5, button6, button7)
 
-    bot.send_message(chat_id, mes.message13(), reply_markup=keyboard)
+    photo = open('resources/academy.png', 'rb')  # Opening the image file
+
+    bot.send_photo(chat_id, photo, caption=mes.message13(), reply_markup=keyboard)
+
+    photo.close()  # Closing the image file after sending
 
 
 # Send the analysis info
@@ -429,7 +441,11 @@ def send_message_3c_ticket(chat_id):
     button7 = types.KeyboardButton(text="На главную")
     keyboard.add(button1, button2, button4, button5, button6, button7)
 
-    bot.send_message(chat_id, mes.message14(), reply_markup=keyboard)
+    photo = open('resources/trip.png', 'rb')  # Opening the image file
+
+    bot.send_photo(chat_id, photo, caption=mes.message14(), reply_markup=keyboard)
+
+    photo.close()  # Closing the image file after sending
 
 
 # Send the analysis info
@@ -443,7 +459,11 @@ def send_message_3d_ticket(chat_id):
     button7 = types.KeyboardButton(text="На главную")
     keyboard.add(button1, button2, button4, button5, button6, button7)
 
-    bot.send_message(chat_id, mes.message15(), reply_markup=keyboard)
+    photo = open('resources/stratses.png', 'rb')  # Opening the image file
+
+    bot.send_photo(chat_id, photo, caption=mes.message15(), reply_markup=keyboard)
+
+    photo.close()  # Closing the image file after sending
 
 
 # Send the analysis info
@@ -457,17 +477,20 @@ def send_message_3e_ticket(chat_id):
     button7 = types.KeyboardButton(text="На главную")
     keyboard.add(button1, button2, button4, button5, button6, button7)
 
-    bot.send_message(chat_id, mes.message16(), reply_markup=keyboard)
+    photo = open('resources/amasession.png', 'rb')  # Opening the image file
+
+    bot.send_photo(chat_id, photo, caption=mes.message16(), reply_markup=keyboard)
+
+    photo.close()  # Closing the image file after sending
 
 
 # Send the analysis info
 def send_message_4_ticket(chat_id):
     keyboard = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
     button1 = types.KeyboardButton(text="Подать заявку")
-    button2 = types.KeyboardButton(text="Стать участником")
     button3 = types.KeyboardButton(text="Стать партнером")
     button4 = types.KeyboardButton(text="На главную")
-    keyboard.add(button1, button2, button3, button4)
+    keyboard.add(button1, button3, button4)
 
     bot.send_message(chat_id, mes.message9(), reply_markup=keyboard)
 
@@ -481,7 +504,11 @@ def send_message_5_ticket(chat_id):
     button4 = types.KeyboardButton(text="На главную")
     keyboard.add(button1, button2, button3, button4)
 
-    bot.send_message(chat_id, mes.message10(), reply_markup=keyboard)
+    photo = open('resources/partnership.png', 'rb')  # Opening the image file
+
+    bot.send_photo(chat_id, photo, caption=mes.message10(), reply_markup=keyboard)
+
+    photo.close()  # Closing the image file after sending
 
 
 # Send the analysis info
@@ -489,11 +516,14 @@ def send_message_6_ticket(chat_id):
     keyboard = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
     button1 = types.KeyboardButton(text="Стать участником OpenCA")
     button2 = types.KeyboardButton(text="Kанал OpenCalifornia")
-    button3 = types.KeyboardButton(text="OpenCalifornia")
     button4 = types.KeyboardButton(text="На главную")
-    keyboard.add(button1, button2, button3, button4)
+    keyboard.add(button1, button2, button4)
 
-    bot.send_message(chat_id, mes.message11(), reply_markup=keyboard)
+    photo = open('resources/openca.png', 'rb')  # Opening the image file
+
+    bot.send_photo(chat_id, photo, caption=mes.message11(), reply_markup=keyboard)
+
+    photo.close()  # Closing the image file after sending
 
 
 # Send the subscribed message
@@ -525,7 +555,11 @@ def send_contact_message(chat_id):
     phone_number = '+1234567890'
 
     # Send the contact
-    bot.send_contact(chat_id, phone_number, first_name, last_name)
+    #bot.send_contact(chat_id, phone_number, first_name, last_name)
+
+    bot.send_message(chat_id, text="@openMENA_admin")
+
+
 
 
 def send_to_crm(is_ca: bool, chat_id):
