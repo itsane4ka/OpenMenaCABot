@@ -94,6 +94,15 @@ def start(message):
     bot.send_message(message.chat.id, "Привет! Пожалуйста, отправь мне свой контакт.", reply_markup=keyboard)
 
 
+@bot.message_handler(commands=['main'])
+def main(message):
+    # Получаем chat_id из сообщения
+    chat_id = message.chat.id
+
+    # Вызываем функцию send_subscribed_message с передачей chat_id
+    send_subscribed_message(chat_id)
+
+
 # Обработчик полученного контакта
 @bot.message_handler(content_types=['contact'])
 def handle_contact(message):
