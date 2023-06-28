@@ -22,7 +22,7 @@ url_ca = 'https://docs.google.com/forms/d/e/1FAIpQLSf2TDJR1j6BTLtB0sSsi286q0qR2h
 url_mena = 'https://docs.google.com/forms/d/e/1FAIpQLSdtXAzG6D39SPEFBtk17dFo_cgrniNCdP05tf67nV1-BNip-Q/formResponse'
 mes = Messages()
 
-channel_link = "https://t.me/testbot123da"
+channel_link = "https://t.me/+sUHGchTwryU5Nzli"
 channel_id = [-1001930406351]
 channel_open_california_link = "link to channel OpenCA"
 channel_open_california_chat_link = 'link to chat OpenCA'
@@ -142,6 +142,8 @@ def handle_button_click(message):
         bot.send_message(chat_id, mes.message3(channel_link))
 
     elif text == "Я подписался 👌":
+        #send_subscribed_message(chat_id)
+
         try:
             channel_id = -1001954800199
             member = bot.get_chat_member(channel_id, chat_id)
